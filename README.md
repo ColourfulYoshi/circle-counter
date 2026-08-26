@@ -4,7 +4,7 @@ Nine Circles
 circle-counter (Nine Circles, NC or CC) is a small utility made for detecting white circles, and then additionally approximating the amount in an area with an even density.
 
 # requirements
-all specified in the `requirements.txt` file
+all specified in the `requirements.txt` file.
 
 # usage
 <img width="852" height="732" alt="main interface" src="https://github.com/user-attachments/assets/8b10a46f-8726-462f-a416-6eb90707d586" />
@@ -12,6 +12,7 @@ all specified in the `requirements.txt` file
 open an image, select an area using the "Area" button, which will prompt you to click to select a rectangular area. afterwards press "Detect" and all circles will be highlighted according to the Detection Config.
 ### approximate result:
 <img width="852" height="732" alt="result" src="https://github.com/user-attachments/assets/874327ec-875c-46a8-9159-4dc1d5866a11" />
+
 ### original image used:
 <img width="460" height="437" alt="testimg_1" src="https://github.com/user-attachments/assets/c6893360-32d3-4158-90e3-6a2b980f8474" />
 
@@ -20,6 +21,9 @@ the amount of circles will be shown in the canvas at the bottom, along with the 
 **note: resizing the window resets the area.**
 
 for fine-tuning, and proper usage, read the interface documentation below.
+
+# building a .exe
+use the second line in the `BUILD.txt` file.
 
 # documentation: main interface
 
@@ -88,9 +92,127 @@ settings dropdown menu.
 # documentation: Theme Select
 <img width="702" height="382" alt="theme menu" src="https://github.com/user-attachments/assets/f120f88b-15cc-4183-9c63-fe3ba17cd271" />
 
-theme selection and color preview menu. select a category (top), which will have a collection of themes.
+theme selection and color preview menu. select a category (top), which will have a collection of themes you can select from the list below.
+
+selecting a theme will also change the color preview textbox.
+
+press "Select" to confirm the selected theme.
+
+you can add your own themes my editing "config_themes.py". more on that in the file documentation below.
+
+# documentation: Formula Editor
+<img width="502" height="182" alt="formula editor" src="https://github.com/user-attachments/assets/9eebbacf-ed11-468a-bee7-58f430116d65" />
+
+formula used for approximating the amount of circles on the field.
+
+input the formula as a python expression. then click "Set" to confirm the formula.
+
+you can click "Reset" to clear the input field and insert the default formula, however that does not automatically save it.
+
+pressing "Cancel" closes the menu without saving.
+
+available variables:
+* `t` - amount of circles in the selected area
+* `a` - selected area size (value of `area size`)
+* `p` - field size (value of `prop size`)
+
+available functions (all accept only `int` and `float`, unless specified otherwise), those marked with a [~] are custom non-python keywords:
+* `abs(x)` - absolute value of `x`. returns either an `int` or `float`, depending on which type `x` is.
+* `round(x)` - rounded value of `x`. returns an `int`.
+* [~] `floor(x)` - `x` rounded down. returns an `int`.
+* [~] `ceil(x)` - `x` rounded up. returns an `int`.
+* `min(a, b, c, ...)` - accepts multiple values, separated by a comma. returns either an `int` or `float`, depending on what the minimum value is.
+* `max(a, b, c, ...)` - similiarly to `min`, accepts multiple values, but instead returns the maximum.
+* [~] `avg(a, b, c, ...)` - averages out the values. returns a `float`.
+* `sum(a, b, c, ...)` - sums the values. returns a `float` if there's at least one `float` value, otherwise `int`.
+* `int(x)` - converts the value to an `int`. can additionally accept `str`.
+* `float(x)` - converts the value to a `float`. can additionally accept `str`.
+
+custom variables are called "binders" and can be created using the Binders menu.
+
+**if the formula is an invalid expression, or if it errors, for the detection approximation the default one will be used.**
+
+# documentation: Binders
+<img width="402" height="182" alt="binders menu" src="https://github.com/user-attachments/assets/5a5aed6c-3ab1-49b2-8dfb-0d698e661bd3" />
+
+binders are custom variables the user can create and use in the formula.
+
+to create a binder, input its name in the left field, and click "Add". after that, the binder will be shown in the list above and automatically selected for editing.
+
+to edit a binder, select it or enter its name, input the value in the field on the right, and click "Set".
+
+to remove a binder, select it or enter its name, and then click "Remove".
+
+restrictions:
+* a binder's name must be a valid python variable name.
+* a binder's value may only be a float.
+* a binder's name cannot be a python keyword.
+ * however, it can be a custom function name, used in the formula (those marked by [~]). keep that in mind when naming them, as this may produce unexpected errors.
+
+# documentation: Journal
+<img width="702" height="382" alt="journal" src="https://github.com/user-attachments/assets/1b1a5368-4e12-4ae8-b09e-d5f077595b13" />
+
+the journal keeps all status logs (except for prompts) with their log level and timestamp.
+
+all proper error logs will be put here.
+
+# documentation: .9csave
+
+user save file. created if there is no "usersettings.9csave" file present in the folder.
+
+stores:
+* selected theme
+* saved formula
+* binders
+
+it is updated each time one of these things is changed.
+
+**may not work properly with a .exe file. please run the code as a python file if that matters to you.**
+
+# documentation: custom theme support
+
+custom themes can be added in "config_themes.py". to do that:
+
+* create a new variable, which will be the "collection". you can copy already existing variables for simplicity.
+* every collection is structured like this:
+```
+collection = {
+ "Name1": dict(
+  # every single color variable
+ ),
+ "Name2": dict(
+  # every single color variable
+ ),
+}
+```
+the "collection" is the main dictionary variable, a "theme" is the key and value pair in the "collection". the key is the name, and the value is the config.
+
+**make sure that the config has every single variable that other already existing themes have.**
+* after you have modified the color values in the config, go to the top of the file, and find a variable named "theme_order". it should be structured like this:
+```
+theme_order = [
+ ("Collection1", ("Theme1", "Theme2", "Theme3")),
+ ("default collection", ("dark theme", "light theme")),
+]
+```
+in it, create a new tuple, with 2 elements. the first element is the name of the collection, and the second will be another tuple, containing all theme names.
+
+with the example above, it should look something like this:
+```
+theme_order = [
+ ("Collection1", ("Theme1", "Theme2", "Theme3")), # old, unchanged
+ ("default collection", ("dark theme", "light theme")), # also unchanged
+ ("very original name", ("Name1", "Name2")), # new
+]
+```
+
+**it is important that the names of the themes match how they are in the collection dictionary.**
+
+after that, your new theme will be available from the Themes dropdown, or in the Theme Select menu, as a separate collection.
 
 # notice
 this project is not maintained and was not made for general usage. the repository is made for archiving purposes.
 
 however, code is free to be used and modified.
+
+may not work on Linux or MacOS properly.
