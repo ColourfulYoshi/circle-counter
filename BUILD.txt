@@ -1,0 +1,2 @@
+pyinstaller --clean -y -n "main" -w --add-data="icon.png;files" main.py
+pyinstaller --clean -y -n "main" -w --add-data "icon.png;files" --add-data "colorpicker.png;files" --onefile main.py
