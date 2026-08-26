@@ -2,7 +2,7 @@ theme_order = [
     ("Default", ("Dark", "Light", "Dark Contrast")),
     ("Custom", ("Moonlight", "Sunrise", "Icon")),
     ("Other", ("Red", "Green", "Blue")),
-    ("?", ("for fedya", "for bogdan", "gray grayich"))
+    # ("?", ("for F", "for B", "gray gr")) # Do not.
 ]
 
 collection1 = {
