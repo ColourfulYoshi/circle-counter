@@ -1865,7 +1865,7 @@ add_topbar_menu(
     [(title, lambda t=title: theme_change(t)) for title in configs.MAIN_STYLE]
 )
 add_topbar_menu(
-    "Settings", 0, 0.03,
+    "Settings", 10, 0.08,
     [
         ("Formula", formula_input),
         ("Binders", binder_toplevel),
